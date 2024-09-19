@@ -1,0 +1,168 @@
+zabbix_export:
+  version: '7.0'
+  host_groups:
+    - uuid: 4d254bcd60a041bba3d2b87cc2aaf681
+      name: 'Zabbix pages'
+  hosts:
+    - host: 'Training forms'
+      name: 'Training forms'
+      groups:
+        - name: 'Zabbix pages'
+      items:
+        - name: 'Validate certificate'
+          type: BROWSER
+          key: cert.validation
+          value_type: TEXT
+          params: |
+            var browser, result;
+            var  opts = Browser.chromeOptions();
+            opts.capabilities.alwaysMatch['goog:chromeOptions'].args = []
+            browser = new Browser(opts);
+            browser.setScreenSize(Number(1980), Number(1020));
+            try {
+                browser.navigate("https://www.zabbix.com/certificate_check");
+                browser.collectPerfEntries("open page");
+            
+            // enter name
+            var el = browser.findElement("xpath", "//label[text()='First Name']/following::input");
+            if (el === null) {throw Error("cannot find name input field");}
+            el.sendKeys("Aleksandrs");
+            
+            // enter last name
+            var el = browser.findElement("xpath", "//label[text()='Last name']/following::input");
+            if (el === null) {throw Error("cannot find name input field");}
+            el.sendKeys("Petrovs-Gavrilovs");
+            
+            // enter cert number
+            var el = browser.findElement("xpath", "//label[text()='Certificate number']/following::input");
+            if (el === null) {throw Error("cannot find name input field");}
+            el.sendKeys("CT-2404-003");
+            
+            // select version
+            var el = browser.findElement("css selector", "form#certificate_validation>fieldset>div:nth-of-type(5)>select");
+            if (el === null) {throw Error("cannot find name input field");}
+            el.sendKeys("7.0");
+            
+            // check certificate
+            var el = browser.findElement("xpath", "//button[text()='Check Certificate']");
+            if (el === null) {throw Error("cannot find name input field");}
+            el.click();
+            
+                result = browser.getResult();
+                screenshot = browser.getScreenshot();
+                result.screenshot = browser.getScreenshot();
+            }
+            catch (err) {
+                if (!(err instanceof BrowserError)) {
+                    browser.setError(err.message);
+                }
+                result = browser.getResult();
+                result.error.screenshot = browser.getScreenshot();
+            }
+            finally {
+                return JSON.stringify(result);
+            }
+        - name: 'Navigate to training order form'
+          type: BROWSER
+          key: training.order
+          value_type: TEXT
+          params: |
+            var browser, result;
+            var  opts = Browser.chromeOptions();
+            opts.capabilities.alwaysMatch['goog:chromeOptions'].args = []
+            browser = new Browser(opts);
+            browser.setScreenSize(Number(1980), Number(1020));
+            try {
+                browser.navigate("https://www.zabbix.com/");
+                browser.collectPerfEntries("open page");
+            
+                el = browser.findElement("xpath", "//span[text()='Training']");
+                if (el === null) {
+                 throw Error("cannot find training");
+                }
+                el.click();
+            
+                el = browser.findElement("link text", "Training Application Form");
+                if (el === null) {
+                    throw Error("cannot find application form");
+                }
+                el.click();
+            
+                el = browser.findElement("xpath", "//span[text()='Certified Specialist']");
+                if (el === null) {
+                    throw Error("cannot find password input field");
+                }
+                el.click();
+            
+                el = browser.findElement("xpath", "//td[text()='GMT+9 (Asia & Oceania)']");
+                if (el === null) {
+                    throw Error("cannot find password input field");
+                }
+                el.click();
+            
+            // enter name
+            var el = browser.findElement("xpath", "//label[text()='First name']/following::input");
+            if (el === null) {throw Error("cannot find name input field name");}
+            el.sendKeys("Aleksandrs");
+            
+            // enter last name
+            var el = browser.findElement("xpath", "//label[text()='Last name']/following::input");
+            if (el === null) {throw Error("cannot find name input field last name");}
+            el.sendKeys("Petrovs-Gavrilovs");
+            
+            // enter company name
+            var el = browser.findElement("xpath", "//label[text()='Company']/following::input");
+            if (el === null) {throw Error("cannot find name input field company name");}
+            el.sendKeys("SIA Zabbix");
+            
+            // select country
+            var el = browser.findElement("css selector", "select#country");
+            if (el === null) {throw Error("cannot find country selection");}
+            el.sendKeys("Latvia");
+            
+            // enter phone number
+            var el = browser.findElement("xpath", "//label[text()='Phone number']/following::input");
+            if (el === null) {throw Error("cannot find name input field");}
+            el.sendKeys("26126262");
+            
+            // enter e-mail address
+            var el = browser.findElement("xpath", "//label[text()='Business email address']/following::input");
+            if (el === null) {throw Error("cannot find name input field");}
+            el.sendKeys("zabbix@zabbix.com");
+            
+            // click submit
+            var el = browser.findElement("xpath", "//button[text()='Submit Training Request']");
+            if (el === null) {throw Error("cannot find name input field");}
+            el.click();
+            
+            // click submit
+            var el = browser.findElement("xpath", "//button[@class='button button-transparent']");
+            if (el === null) {throw Error("cannot find reg field");}
+            el.getText();
+            
+            
+            //click captcha
+            var el = browser.findElement("xpath", "//label[text()='Captcha']");
+            if (el === null) {throw Error("cannot find name input field");}
+            el.click();
+            
+                result = browser.getResult();
+                screenshot = browser.getScreenshot();
+                result.screenshot = browser.getScreenshot();
+            }
+            catch (err) {
+                if (!(err instanceof BrowserError)) {
+                    browser.setError(err.message);
+                }
+                result = browser.getResult();
+                result.error.screenshot = browser.getScreenshot();
+            }
+            finally {
+                return JSON.stringify(result);
+            }
+      macros:
+        - macro: '{$WEBSITE.DOMAIN}'
+          value: zabbix.com
+        - macro: '{$WEBSITE.SCHEME}'
+          value: https
+      inventory_mode: DISABLED
