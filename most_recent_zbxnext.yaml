@@ -14,6 +14,7 @@ zabbix_export:
           key: authenticate
           delay: 12h
           value_type: TEXT
+          trends: '0'
           params: |
             var browser, result;
             var opts = Browser.chromeOptions();
@@ -93,11 +94,10 @@ zabbix_export:
                 }
             }
             
-                result = browser.getResult();
+               result = browser.getResult();
                result.screenshot = browser.getScreenshot();
             
             }
-            Zabbix.sleep(2000);
             
             catch (err) {
                if (!(err instanceof BrowserError)) {
@@ -128,7 +128,8 @@ zabbix_export:
           type: HTTP_AGENT
           key: test.rpc
           value_type: TEXT
-          url: 'https://trainer-zbx-YYYY.zabbix.training/api_jsonrpc.php'
+          trends: '0'
+          url: 'http://{$ZABBIX.DOMAIN}/api_jsonrpc.php'
           post_type: JSON
           posts: |
             {
@@ -149,17 +150,21 @@ zabbix_export:
         - name: 'Discover latest ZBXNEXT'
           type: DEPENDENT
           key: zbxnext.discovery
+          delay: '0'
           filter:
             conditions:
               - macro: '{#ZBXNEXT}'
                 value: ^ZBXNEXT-(\d+)$
+                formulaid: A
           lifetime_type: DELETE_IMMEDIATELY
+          lifetime: '0'
           item_prototypes:
             - name: 'Most recent {#ZBXNEXT} screenshot'
               type: HTTP_AGENT
               key: 'extract.screen[{#ZBXNEXT}]'
               delay: 12h
               value_type: TEXT
+              trends: '0'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -192,17 +197,16 @@ zabbix_export:
                           var requestDataString = JSON.stringify(requestData);
                       
                           // Send the request with the JSON string data
-                          var resp = req.post('https://trainer-zbx-YYYY.zabbix.training/api_jsonrpc.php', requestDataString);
+                          var resp = req.post('http://{$ZABBIX.DOMAIN}/api_jsonrpc.php', requestDataString);
                       
                           // Extract the desired value from the response
                           result = resp; // Adjust this to the appropriate field based on API response
                       
                       return result;
-                      
                 - type: JSONPATH
                   parameters:
                     - '$.result[0].value'
-              url: 'https://{$ZABBIX.DOMAIN}/api_jsonrpc.php'
+              url: 'http://{$ZABBIX.DOMAIN}/api_jsonrpc.php'
               post_type: JSON
               posts: |
                 {
@@ -225,6 +229,7 @@ zabbix_export:
               delay: 1d
               history: '0'
               value_type: TEXT
+              trends: '0'
               params: |
                 var params = JSON.parse(value);
                 var browser = new Browser(Browser.chromeOptions());
@@ -286,7 +291,9 @@ zabbix_export:
             - name: '{#ZBXNEXT} performance data'
               type: DEPENDENT
               key: 'perf.data[{#ZBXNEXT}]'
+              delay: '0'
               value_type: TEXT
+              trends: '0'
               status: DISABLED
               discover: NO_DISCOVER
               preprocessing:
@@ -298,7 +305,9 @@ zabbix_export:
             - name: '{#ZBXNEXT} screenshot'
               type: DEPENDENT
               key: 'screenshot[{#ZBXNEXT}]'
+              delay: '0'
               value_type: BINARY
+              trends: '0'
               preprocessing:
                 - type: JSONPATH
                   parameters:
@@ -330,5 +339,5 @@ zabbix_export:
         - macro: '{$PAGE.USERNAME}'
           type: SECRET_TEXT
         - macro: '{$ZABBIX.DOMAIN}'
-          type: SECRET_TEXT
+          value: student-XX-zbxtr-YYYY.zabbix.training
       inventory_mode: DISABLED
