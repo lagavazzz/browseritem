@@ -128,7 +128,7 @@ zabbix_export:
           type: HTTP_AGENT
           key: test.rpc
           value_type: TEXT
-          url: 'https://trainer-zbxtr-7777.zabbix.training/api_jsonrpc.php'
+          url: 'https://trainer-zbx-YYYY.zabbix.training/api_jsonrpc.php'
           post_type: JSON
           posts: |
             {
@@ -192,7 +192,7 @@ zabbix_export:
                           var requestDataString = JSON.stringify(requestData);
                       
                           // Send the request with the JSON string data
-                          var resp = req.post('https://trainer-zbxtr-7777.zabbix.training/api_jsonrpc.php', requestDataString);
+                          var resp = req.post('https://trainer-zbx-YYYY.zabbix.training/api_jsonrpc.php', requestDataString);
                       
                           // Extract the desired value from the response
                           result = resp; // Adjust this to the appropriate field based on API response
