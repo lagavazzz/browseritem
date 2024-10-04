@@ -137,12 +137,12 @@ zabbix_export:
                 "method": "item.get",
                 "params": {
                     "output": ["itemid"],
-                    "hostids": "10651",
+                    "hostids": "<your-host-id>",
                     "search": {
                         "key_": "screenshot"
                     }
                 },
-                "auth": "f2b116aec1e9a5262ec9244f0ee36df63f0de369f16c0761ee4e422d0e68927c",
+                "auth": "Your-API-token",
                 "id": 1
             }
           request_method: POST
@@ -189,7 +189,7 @@ zabbix_export:
                                   "sortorder": "DESC",
                                   "limit": 1
                               },
-                              "auth": "f2b116aec1e9a5262ec9244f0ee36df63f0de369f16c0761ee4e422d0e68927c",
+                              "auth": "<your-api-token>",
                               "id": 1
                           };
                       
@@ -214,12 +214,12 @@ zabbix_export:
                     "method": "item.get",
                     "params": {
                         "output": ["itemid"],
-                        "hostids": "10651",
+                        "hostids": "<your-host-id>",
                         "search": {
                             "key_": "screenshot[{#ZBXNEXT}]"
                         }
                     },
-                    "auth": "f2b116aec1e9a5262ec9244f0ee36df63f0de369f16c0761ee4e422d0e68927c",
+                    "auth": "<your-api-token>",
                     "id": 1
                 }
               request_method: POST
@@ -339,5 +339,5 @@ zabbix_export:
         - macro: '{$PAGE.USERNAME}'
           type: SECRET_TEXT
         - macro: '{$ZABBIX.DOMAIN}'
-          value: student-XX-zbxtr-YYYY.zabbix.training
+          value: <your-vm-ip>
       inventory_mode: DISABLED
