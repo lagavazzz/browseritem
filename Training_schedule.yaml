@@ -1,0 +1,139 @@
+zabbix_export:
+  version: '7.0'
+  host_groups:
+    - uuid: df0aff4a07fa4f5294668b5a35e1732d
+      name: 'Zabbix trainings'
+  hosts:
+    - host: 'Zabbix training schedule'
+      name: 'Zabbix training schedule'
+      groups:
+        - name: 'Zabbix trainings'
+      items:
+        - name: 'Closest date'
+          type: DEPENDENT
+          key: date.1
+          delay: '0'
+          value_type: CHAR
+          trends: '0'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[0]'
+          master_item:
+            key: training.schedule
+        - name: '2nd closest date'
+          type: DEPENDENT
+          key: date.2
+          delay: '0'
+          value_type: CHAR
+          trends: '0'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[1]'
+          master_item:
+            key: training.schedule
+        - name: '3nd closest date'
+          type: DEPENDENT
+          key: date.3
+          delay: '0'
+          value_type: CHAR
+          trends: '0'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[2]'
+          master_item:
+            key: training.schedule
+        - name: '4th closest date'
+          type: DEPENDENT
+          key: date.4
+          delay: '0'
+          value_type: CHAR
+          trends: '0'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[3]'
+          master_item:
+            key: training.schedule
+        - name: 'Training schedule'
+          type: BROWSER
+          key: training.schedule
+          delay: 1h
+          value_type: TEXT
+          trends: '0'
+          params: |
+            var browser, result;
+            var  opts = Browser.chromeOptions();
+            opts.capabilities.alwaysMatch['goog:chromeOptions'].args = []
+            browser = new Browser(opts);
+            browser.setScreenSize(Number(1980), Number(1020));
+            try {
+                browser.navigate("https://www.zabbix.com/");
+                browser.collectPerfEntries("open page");
+            
+                el = browser.findElement("xpath", "//span[text()='Training']");
+                if (el === null) {
+                 throw Error("cannot find training");
+                }
+                el.click();
+            
+                el = browser.findElement("link text", "Schedule");
+                if (el === null) {
+                    throw Error("cannot find application form");
+                }
+                el.click();
+            
+                el = browser.findElement("link text", "English");
+                if (el === null) {
+                    throw Error("cannot find application form");
+                }
+                el.click();
+            
+                el = browser.findElement("xpath", "//span[text()='English']");
+                if (el === null) {
+                    throw Error("cannot find application form");
+                }
+                el.click();
+            
+                el = browser.findElement("xpath", "//span[text()='Korean']");
+                if (el === null) {
+                    throw Error("cannot find application form");
+                }
+                el.click();
+            
+                el = browser.findElement("xpath", "//span[text()='Dutch']");
+                if (el === null) {
+                    throw Error("cannot find password input field");
+                }
+                el.click();
+            
+                        el = browser.findElements("xpath", "//*[contains(text(), ' 20')]");
+                        var dates = [];
+                        for (var n = 0; n < el.length; n++) { 
+                            dates.push(el[n].getText('2024')); 
+                        }
+                       // Remove entries that do not contain "2024"
+                       dates = dates.filter(function(date) {
+                        return date.includes('2024');
+                      });
+                      dates = uniq(dates);
+                      Zabbix.sleep(2000);
+            
+                result = browser.getResult();
+                screenshot = browser.getScreenshot();
+                result.screenshot = browser.getScreenshot();
+            }
+            
+            catch (err) {
+                if (!(err instanceof BrowserError)) {
+                    browser.setError(err.message);
+                }
+                result = browser.getResult();
+                result.error.screenshot = browser.getScreenshot();
+            }
+            finally {
+               return JSON.stringify(dates);
+            }
+      inventory_mode: DISABLED
